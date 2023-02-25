@@ -5,12 +5,20 @@ window.addEventListener('DOMContentLoaded', () => {
   const announcer = document.querySelector('.announcer');
 
   let board = ['', '', '', '', '', '', '', '', ''];
-  let currentPlayer = '1';
+  let currentPlayer = 'X';
   let isGameActive = true;
 
-  const PLAYER1_WON = 'PLAYER1_WON';
-  const PLAYER2_WON = 'PLAYER2_WON';
-  const TIE = TIE;
+  const PLAYERX_WON = 'PLAYERX_WON';
+  const PLAYERO_WON = 'PLAYERO_WON';
+  const TIE = 'TIE';
+
+
+  /*
+      Indexes within the board
+      [0] [1] [2]
+      [3] [4] [5]
+      [6] [7] [8]
+  */
 
   const winningConditions = [
     [0, 1, 2],
@@ -26,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function handleResultValidation() {
     let roundWon = false;
     for (let i = 0; i <= 7; i++) {
-      const winningCondition = winningConditions[i];
+      const winCondition = winningConditions[i];
       const a = board[winCondition[0]];
       const b = board[winCondition[1]];
       const c = board[winCondition[2]];
@@ -34,13 +42,13 @@ window.addEventListener('DOMContentLoaded', () => {
         continue;
       }
       if (a === b && b === c) {
-        roundwon = true;
+        roundWon = true;
         break;
       }
     }
 
     if (roundWon) {
-      announce(currentPlayer === '1' ? PLAYER1_WON : PLAYER2_WON);
+      announce(currentPlayer === 'X' ? PLAYERX_WON : PLAYERO_WON);
       isGameActive = false;
       return;
     }
@@ -51,11 +59,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const announce = (type) => {
     switch (type) {
-      case PLAYER2_WON:
-        announcer.innerHTML = 'Player <span class="player2">2</span> Won';
+      case PLAYERO_WON:
+        announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
         break;
-      case PLAYER1_WON:
-        announcer.innerHTML = 'Player <span class="player1">1</span> Won';
+      case PLAYERX_WON:
+        announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
         break;
       case TIE:
         announcer.innerText = 'Tie';
@@ -64,7 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
   };
 
   const isValidAction = (tile) => {
-    if (tile.innerText === '1' || tile.innerText === '2') {
+    if (tile.innerText === 'X' || tile.innerText === 'O') {
       return false;
     }
 
@@ -73,14 +81,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const updateBoard = (index) => {
     board[index] = currentPlayer;
-  };
+  }
 
   const changePlayer = () => {
     playerDisplay.classList.remove(`player${currentPlayer}`);
-    currentPlayer = currentPlayer === '1' ? '2' : '1';
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
     playerDisplay.innerText = currentPlayer;
     playerDisplay.classList.add(`player${currentPlayer}`);
-  };
+  }
 
   const userAction = (tile, index) => {
     if (isValidAction(tile) && isGameActive) {
@@ -90,23 +98,23 @@ window.addEventListener('DOMContentLoaded', () => {
       handleResultValidation();
       changePlayer();
     }
-  };
+  }
 
   const resetBoard = () => {
     board = ['', '', '', '', '', '', '', '', ''];
     isGameActive = true;
     announcer.classList.add('hide');
 
-    if (currentPlayer === 'Player 2') {
+    if (currentPlayer === 'O') {
       changePlayer();
     }
 
     tiles.forEach(tile => {
       tile.innerText = '';
-      tile.classList.remove('player1');
-      tile.classList.remove('player2');
+      tile.classList.remove('playerX');
+      tile.classList.remove('playerO');
     });
-  };
+  }
 
   tiles.forEach((tile, index) => {
     tile.addEventListener('click', () => userAction(tile, index));
